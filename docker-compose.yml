@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  django-web-service:
+    build:
+      context: .
+      target: local_dev
+    container_name: 'particle-dashboard-web-container'
+    labels:
+      description: "what does this django service do"
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./.env.django
+    volumes:
+      - .:/code
+    depends_on:
+        django-db-service:
+          condition: service_healthy
+
+
+  django-db-service:
+      image: postgres:14.2
+      container_name: 'particle-dashboard-db-container'
+      labels:
+        description: 'what data does this db hold'
+      volumes:
+        - pg_django_db_data:/var/lib/postgresql/data/
+      command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
+      env_file:
+        - ./.env.django
+      ports:
+        - "5432:5432"
+      expose:
+        - "5432"
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+        interval: 5s
+        timeout: 10s
+        retries: 3
+
+
+volumes:
+  pg_django_db_data:
