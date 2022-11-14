@@ -16,8 +16,13 @@
                                         </span>
                                 <h5 class="h3 fw-bold mb-1">{{ users_device.device.name }}</h5>
                                 <div class="small mt-2">
+                                    {% if users_device.device.online %}
                                     <span class="fas fa-angle-up text-success"></span>
                                     <span class="text-success fw-bold">{{ users_device.device.device_type }}</span> {{ users_device.device.online }}
+                                    {% else %}
+                                    <span class="fas fa-angle-down text-warning"></span>
+                                    <span class="text-warning fw-bold">{{ users_device.device.device_type }}</span> {{ users_device.device.online }}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
