@@ -2,4 +2,9 @@
 
 {% block content %}
 <h1>Dashboard</h1>
+    {% for users_device in users_devices %}
+        <p>{{ users_device.device.device_id }}</p>
+        <p>{{ users_device.device.name }}</p>
+        <p>{{ users_device.device.device_type }}</p>
+    {% endfor %}
 {% endblock content %}

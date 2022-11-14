@@ -34,11 +34,3 @@ def test_particle_device():
     users_of_device = UsersParticleDevice.objects.filter(device=pd)
     assert users_of_device is not None
     assert len(users_of_device) == 1
-
-def test_particle_device_info():
-    env = Env()
-
-    env.read_env("../.env")
-    breakpoint()
-    cloud = ParticleCloud(env("PARTICLEIO_ACCESS_TOKEN"))
-
