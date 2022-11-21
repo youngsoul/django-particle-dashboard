@@ -1,5 +1,6 @@
 from django.db import models
 from .utils import get_particle_cloud
+from .event_subscription import float_event_handler, integer_event_handler, string_event_handler
 
 
 # Create your models here.
@@ -32,6 +33,19 @@ class ParticleDevice(TimeStampMixin):
         else:
             return []
 
+    def update_event_subscription(self, particle_event):
+        if particle_event.subscribe:
+            print("subscribe")
+            if particle_event.event_type == ParticleDeviceEvent.EventType.FLOAT:
+                get_particle_cloud().devices[self.name].subscribe(particle_event.name, float_event_handler)
+            elif particle_event.event_type == ParticleDeviceEvent.EventType.INTEGER:
+                get_particle_cloud().devices[self.name].subscribe(particle_event.name, integer_event_handler)
+            elif particle_event.event_type == ParticleDeviceEvent.EventType.STRING:
+                get_particle_cloud().devices[self.name].subscribe(particle_event.name, string_event_handler)
+        else:
+            print("unsubscribe")
+
+
     def get_variable_value(self, variable_name:str, refresh_values: bool=True):
         return get_particle_cloud().devices[self.name].variable(variable_name)
 
@@ -60,7 +74,7 @@ class ParticleDevice(TimeStampMixin):
 class ParticleDeviceEvent(TimeStampMixin):
     name = models.CharField(max_length=512, blank=True, null=True)
     persist_values = models.BooleanField(default=False)
-    activitly_monitor = models.BooleanField(default=False)
+    subscribe = models.BooleanField(default=False)
     device = models.ForeignKey(ParticleDevice, null=False, blank=False, on_delete=models.CASCADE, related_name='device_events')
 
     class EventType(models.IntegerChoices):
