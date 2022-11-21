@@ -12,7 +12,8 @@ class CustomUser(AbstractUser):
 class UsersParticleDevice(models.Model):
     person = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     device = models.ForeignKey(ParticleDevice, on_delete=models.CASCADE)
-    can_see_functions = models.BooleanField(default=False)
+    can_view_functions = models.BooleanField(default=False)
     can_call_functions = models.BooleanField(default=False)
     can_view_events = models.BooleanField(default=False)
     can_send_events = models.BooleanField(default=False)
+    can_view_variables = models.BooleanField(default=False)

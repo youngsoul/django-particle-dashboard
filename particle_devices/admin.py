@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ParticleDevice
+from .models import ParticleDevice, ParticleDeviceEvent
 from accounts.models import UsersParticleDevice
 from .utils import get_particle_cloud
 from pyparticleio.ParticleCloud import ParticleCloud
@@ -8,9 +8,12 @@ from pyparticleio.ParticleCloud import ParticleCloud
 class UserParticlesDevicesInLine(admin.StackedInline):
     model = UsersParticleDevice
 
+class ParticleDeviceEventInline(admin.TabularInline):
+    model = ParticleDeviceEvent
+
 class ParticleDeviceAdmin(admin.ModelAdmin):
     model = ParticleDevice
-    inlines = (UserParticlesDevicesInLine,)
+    inlines = (UserParticlesDevicesInLine, ParticleDeviceEventInline)
     actions = ['refresh_particle_data']
 
     def refresh_particle_data(self, request, queryset):

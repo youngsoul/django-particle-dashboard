@@ -26,6 +26,15 @@ class ParticleDevice(TimeStampMixin):
     def __str__(self):
         return f"{self.device_id}|{self.name}"
 
+    def get_variable_names(self):
+        if 'variables' in self.device_details:
+            return list(self.device_details['variables'].keys())
+        else:
+            return []
+
+    def get_variable_value(self, variable_name:str, refresh_values: bool=True):
+        return get_particle_cloud().devices[self.name].variable(variable_name)
+
     def particle_refresh(self):
         # refresh the state of the particledevice
         cloud = get_particle_cloud()
@@ -47,3 +56,22 @@ class ParticleDevice(TimeStampMixin):
                 self.device_type = "Unknown"
 
         self.save()
+
+class ParticleDeviceEvent(TimeStampMixin):
+    name = models.CharField(max_length=512, blank=True, null=True)
+    persist_values = models.BooleanField(default=False)
+    activitly_monitor = models.BooleanField(default=False)
+    device = models.ForeignKey(ParticleDevice, null=False, blank=False, on_delete=models.CASCADE, related_name='device_events')
+
+    class EventType(models.IntegerChoices):
+        FLOAT = 0
+        INTEGER = 1
+        STRING = 2
+
+    event_type = models.IntegerField(choices=EventType.choices, default=EventType.STRING)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name}|{self.event_type}"

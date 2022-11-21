@@ -36,6 +36,47 @@
                                     {% endif %}
                                 </div>
                             </div>
+                            <div class="d-block ms-auto">
+                                <div class="h6 fw-normal text-gray mb-2">Variables</div>
+                                {% if users_device.device.online and users_device.can_view_variables %}
+                                    {% for var_data in users_device.device.variable_data %}
+                                    <div class="d-flex align-items-center text-right mb-2">
+                                        <span class="shape-xs rounded-circle bg-dark me-2"></span>
+                                        <span class="fw-normal small">{{ var_data.0 }}:{{ var_data.1|floatformat:1 }}</span>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="d-flex align-items-center text-right mb-2">
+                                        <span class="shape-xs rounded-circle bg-dark me-2"></span>
+                                        <span class="fw-normal small">N/A</span>
+                                    </div>
+
+                                {% endif %}
+                            </div>
+                            <div class="d-block ms-auto">
+                                <div class="h6 fw-normal text-gray mb-2">Events</div>
+
+                                <div class="d-flex align-items-center text-right mb-2">
+                                    <span class="shape-xs rounded-circle bg-dark me-2"></span>
+                                    <span class="fw-normal small">Last month</span>
+                                </div>
+                                <div class="d-flex align-items-center text-right">
+                                    <span class="shape-xs rounded-circle bg-tertiary me-2"></span>
+                                    <span class="fw-normal small">This month</span>
+                                </div>
+                            </div>
+                            <div class="d-block ms-auto">
+                                <div class="h6 fw-normal text-gray mb-2">Functions</div>
+
+                                <div class="d-flex align-items-center text-right mb-2">
+                                    <span class="shape-xs rounded-circle bg-dark me-2"></span>
+                                    <span class="fw-normal small">Last month</span>
+                                </div>
+                                <div class="d-flex align-items-center text-right">
+                                    <span class="shape-xs rounded-circle bg-tertiary me-2"></span>
+                                    <span class="fw-normal small">This month</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
