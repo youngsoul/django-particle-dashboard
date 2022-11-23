@@ -1,5 +1,5 @@
 # Pull base image
-FROM python:3.10.4-slim-bullseye as base
+FROM python:3.10.4-buster as base
 
 # Set environment variables
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
@@ -12,6 +12,8 @@ RUN apt-get update && apt-get -y upgrade && apt-get install --no-install-recomme
   zip \
   nano \
   build-essential \
+  libpq-dev \
+  python3-dev \
   && rm -rf /var/lib/apt/lists/*
 
 # Set working directory inside container
@@ -22,9 +24,11 @@ RUN mkdir templates
 # copy local project code to container code
 # first '.' is where the Dockerfile is, the second '.' is to the WORKDIR
 COPY . .
-
+RUN pip install --upgrade pip
 RUN pip install pip-tools
 RUN pip-compile requirements.in --upgrade
+
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 FROM builder as deployment
 
