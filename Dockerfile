@@ -25,8 +25,6 @@ RUN mkdir templates
 # first '.' is where the Dockerfile is, the second '.' is to the WORKDIR
 COPY . .
 RUN pip install --upgrade pip
-RUN pip install pip-tools
-RUN pip-compile requirements.in --upgrade
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
@@ -47,8 +45,9 @@ FROM builder as local_dev
 
 ENV PYTHONDONTWRITEBYTECODE 1
 
-RUN pip-compile requirements-dev.in --upgrade
-RUN pip-sync requirements*.txt
+RUN pip install cryptography==3.2.6
+RUN pip install psycopg2
+RUN pip install -r requirements.txt
 
 # run command to keep the container running
 # override this command in docker-compose
