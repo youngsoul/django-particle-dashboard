@@ -45,7 +45,7 @@ FROM builder as local_dev
 
 ENV PYTHONDONTWRITEBYTECODE 1
 
-RUN pip install cryptography==3.2.6
+RUN pip install cryptography==3.4.6
 RUN pip install psycopg2
 RUN pip install -r requirements.txt
 
