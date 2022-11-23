@@ -138,3 +138,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "accounts.CustomUser"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "dashboard"
+
+
+CSRF_TRUSTED_ORIGINS = ['https://particledashboard-patryan.pitunnel.com']
