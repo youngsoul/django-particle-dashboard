@@ -1,8 +1,6 @@
 from django.contrib import admin
 from .models import ParticleDevice, ParticleDeviceEvent
 from accounts.models import UsersParticleDevice
-from .utils import get_particle_cloud
-from pyparticleio.ParticleCloud import ParticleCloud
 
 
 # Register your models here.
