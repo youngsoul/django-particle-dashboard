@@ -34,6 +34,7 @@ def _get_new_weather_data(weather_stop_event):
             weather_reading.temp = temp
             weather_reading.wind = wind
             weather_reading.save()
+            print("weather", temp, wind)
 
     if weather_manager:
         weather_manager.background_polling_running = False
