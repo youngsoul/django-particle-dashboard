@@ -13,12 +13,18 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         my_devices = UsersParticleDevice.objects.filter(person=self.request.user)
         for user_device in my_devices:
             device = user_device.device
+            device.particle_refresh()
             if not device.online:
                 continue
             var_names = device.get_variable_names()
             var_values = []
             for var_name in var_names:
-                var_values.append([var_name, device.get_variable_value(var_name)])
+                try:
+                    vval = device.get_variable_value(var_name)
+                    print(var_name, vval)
+                    var_values.append([var_name, vval])
+                except:
+                    pass
             device.variable_data = var_values
             print(device.name)
 

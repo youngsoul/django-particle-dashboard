@@ -1,8 +1,6 @@
 from django.contrib import admin
 from .models import ParticleDevice, ParticleDeviceEvent
 from accounts.models import UsersParticleDevice
-from .utils import get_particle_cloud
-from pyparticleio.ParticleCloud import ParticleCloud
 
 
 # Register your models here.
@@ -18,6 +16,14 @@ class ParticleDeviceAdmin(admin.ModelAdmin):
     model = ParticleDevice
     inlines = (UserParticlesDevicesInLine, ParticleDeviceEventInline)
     actions = ['refresh_particle_data', 'update_event_subscription']
+
+    # https://stackoverflow.com/questions/5569091/django-admin-add-inlines-dynamically
+    def get_inline_instances(self, request, obj=None):
+        _inlines = super().get_inline_instances(request, obj=None)
+        # custom_inline = YourDynamicInline(self.model, self.admin_site)
+        # _inlines.append(custom_inline)
+        print("******* CUSTOM INLINE INSTANCES")
+        return _inlines
 
     def update_event_subscription(self, request, queryset):
         print("update event subscription")

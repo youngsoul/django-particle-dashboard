@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'pages',
     'particle_devices',
     'particle_readings',
+    'weather_manager',
+    'weather_readings',
 ]
 
 MIDDLEWARE = [

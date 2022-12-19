@@ -3,7 +3,7 @@ from particle_readings.models import ParticleReading
 
 
 def float_event_handler(event_data: Dict):
-    print(f"float event handler: {event_data}")
+    # print(f"float event handler: {event_data}")
     try:
         if event_data is not None:
             particle_reading = ParticleReading()
@@ -14,7 +14,7 @@ def float_event_handler(event_data: Dict):
 
 
 def integer_event_handler(event_data: Dict):
-    print(f"integer event handler: {event_data}")
+    # print(f"integer event handler: {event_data}")
     try:
         if event_data is not None:
             particle_reading = ParticleReading()
@@ -25,7 +25,7 @@ def integer_event_handler(event_data: Dict):
 
 
 def string_event_handler(event_data: Dict):
-    print(f"string event handler: {event_data}")
+    # print(f"string event handler: {event_data}")
     try:
         if event_data is not None:
             particle_reading = ParticleReading()
