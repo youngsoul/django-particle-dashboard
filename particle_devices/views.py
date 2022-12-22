@@ -5,8 +5,8 @@ from accounts.models import CustomUser, UsersParticleDevice
 
 
 # Create your views here.
-class DashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "particle_devices/dashboard.html"
+class DevicesView(LoginRequiredMixin, TemplateView):
+    template_name = "particle_devices/devices.html"
 
     def get_context_data(self, **kwargs):
         original_data = super().get_context_data(**kwargs)
