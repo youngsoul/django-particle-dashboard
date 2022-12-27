@@ -266,3 +266,4 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 /dev_readme.txt
+/logs/*.log*

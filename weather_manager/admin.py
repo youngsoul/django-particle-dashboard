@@ -4,6 +4,9 @@ from weather_readings.models import WeatherReading
 import requests
 from threading import Event, Thread
 import time
+import logging
+
+app_logger = logging.getLogger("myapp")
 
 _weather_thread: Thread = None
 _weather_stop_event: Event = None
@@ -11,6 +14,8 @@ _weather_stop_event: Event = None
 
 def _read_temperature_wind(weather_url):
     res = requests.get(weather_url)
+    app_logger.debug(f"Read Temp/Wind: {weather_url}")
+    app_logger.info(res.content)
     temp_data = res.json()
     t = temp_data['main']['temp']
     w = temp_data['wind']['speed']
@@ -18,6 +23,7 @@ def _read_temperature_wind(weather_url):
 
 
 def _get_new_weather_data(weather_stop_event):
+    app_logger.debug(f'Get New Weather Data')
     continue_forever = True
     weather_manager = None
     while continue_forever:
@@ -25,25 +31,31 @@ def _get_new_weather_data(weather_stop_event):
         for _ in range(0, weather_manager.polling_seconds // 5):
             time.sleep(5)  # 5 seconds, 5 minutes total
             if weather_stop_event.is_set():
+                app_logger.warning(f"Weather Stop Event is Set")
                 continue_forever = False
                 break
         url = weather_manager.api_url + weather_manager.api_key
         if weather_manager.polling_enabled:
-            temp, wind = _read_temperature_wind(url)
-            weather_reading = WeatherReading()
-            weather_reading.temp = temp
-            weather_reading.wind = wind
-            weather_reading.save()
-            print("weather", temp, wind)
+            try:
+                temp, wind = _read_temperature_wind(url)
+                weather_reading = WeatherReading()
+                weather_reading.temp = temp
+                weather_reading.wind = wind
+                weather_reading.save()
+                app_logger.info(f"weather: T:{temp}, W:{wind}")
+            except Exception as Argument:
+                app_logger.exception("Could not read Time/Wind values from API")
 
     if weather_manager:
         weather_manager.background_polling_running = False
         weather_manager.save()
 
+    app_logger.warning(f"Leaving thread that gets to weather data.")
 
 # Register your models here.
 def start_weather_readings(modeladmin, request, queryset):
     global _weather_stop_event, _weather_thread
+    app_logger.info(f"Start weather readings")
 
     if _weather_thread is None:
         weather_manager = WeatherManager.objects.get(pk=WEATHER_MANAGER_SINGLETON_PK)
@@ -54,6 +66,9 @@ def start_weather_readings(modeladmin, request, queryset):
             _weather_thread.start()
             weather_manager.background_polling_running = True
             weather_manager.save()
+            app_logger.info("Weather readings started")
+    else:
+        app_logger.info(f"Weather thread already running")
 
 
 def stop_weather_readings(modeladmin, request, queryset):
@@ -61,6 +76,7 @@ def stop_weather_readings(modeladmin, request, queryset):
     if _weather_stop_event is not None:
         _weather_stop_event.set()
         _weather_thread = None
+        app_logger.info("Stop weather readings")
 
 
 # Register your models here.
