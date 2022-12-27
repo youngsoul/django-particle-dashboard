@@ -1,7 +1,9 @@
 from django.db import models
 from .utils import get_particle_cloud
 from .event_subscription import float_event_handler, integer_event_handler, string_event_handler
+import logging
 
+app_logger = logging.getLogger('myapp')
 
 # Create your models here.
 class TimeStampMixin(models.Model):
@@ -35,7 +37,7 @@ class ParticleDevice(TimeStampMixin):
 
     def update_event_subscription(self, particle_event):
         if particle_event.subscribe:
-            print("subscribe")
+            app_logger.info(f"Event Suubscribe: {particle_event}")
             if particle_event.event_type == ParticleDeviceEvent.EventType.FLOAT:
                 get_particle_cloud().devices[self.name].subscribe(particle_event.name, float_event_handler)
             elif particle_event.event_type == ParticleDeviceEvent.EventType.INTEGER:
@@ -43,7 +45,8 @@ class ParticleDevice(TimeStampMixin):
             elif particle_event.event_type == ParticleDeviceEvent.EventType.STRING:
                 get_particle_cloud().devices[self.name].subscribe(particle_event.name, string_event_handler)
         else:
-            print("unsubscribe")
+            # TODO
+            print("TODO: Unsubscribe")
 
 
     def get_variable_value(self, variable_name:str, refresh_values: bool=True):

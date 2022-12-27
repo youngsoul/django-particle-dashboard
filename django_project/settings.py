@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from environs import Env
 import os
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +28,6 @@ DEBUG = env.bool("DEBUG")
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS").split(" ")
-
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -71,7 +70,7 @@ ROOT_URLCONF = 'django_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / "templates"],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,12 +85,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-"default": env.dj_db_url("DATABASE_URL", default=env("DATABASE_URL"))
+    "default": env.dj_db_url("DATABASE_URL", default=env("DATABASE_URL"))
 }
 
 # Password validation
@@ -112,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -123,7 +120,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -140,3 +136,50 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "accounts.CustomUser"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "dashboard"
+
+
+Path("./logs").mkdir(mode=0o775, parents=True, exist_ok=True)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            # https://docs.python.org/3/library/logging.html#logrecord-attributes
+            'format': '%(levelname)s %(asctime)s %(pathname)s %(funcName)s %(lineno)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'filename': BASE_DIR / 'logs/django_logs.log',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 100000,
+            'backupCount': 3,
+            'formatter': 'verbose',
+        },
+        'myapp_file': {
+            'level': 'DEBUG',
+            'filename': BASE_DIR / 'logs/app_logs.log',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 100000,
+            'backupCount': 3,
+            'formatter': 'verbose',
+        },
+
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'myapp': {
+            'handlers': ['myapp_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
