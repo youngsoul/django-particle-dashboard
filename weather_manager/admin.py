@@ -52,8 +52,8 @@ def _get_new_weather_data(weather_stop_event):
 
     app_logger.warning(f"Leaving thread that gets to weather data.")
 
-# Register your models here.
-def start_weather_readings(modeladmin, request, queryset):
+
+def _start_weather_readings():
     global _weather_stop_event, _weather_thread
     app_logger.info(f"Start weather readings")
 
@@ -70,9 +70,9 @@ def start_weather_readings(modeladmin, request, queryset):
     else:
         app_logger.info(f"Weather thread already running")
 
-
-def stop_weather_readings(modeladmin, request, queryset):
+def _stop_weather_readings():
     global _weather_thread
+    # weather is a singleton so I know there is only one
     if _weather_stop_event is not None:
         _weather_stop_event.set()
         _weather_thread = None
@@ -81,9 +81,13 @@ def stop_weather_readings(modeladmin, request, queryset):
 
 # Register your models here.
 class WeatherManagerAdmin(admin.ModelAdmin):
-    pass
+    model = WeatherManager
+    actions =['start_weather_readings', 'stop_weather_readings']
 
+    def start_weather_readings(self, request, queryset):
+        _start_weather_readings()
+
+    def stop_weather_readings(self, request, queryset):
+        _stop_weather_readings()
 
 admin.site.register(WeatherManager, WeatherManagerAdmin)
-admin.site.add_action(start_weather_readings, "Start Weather Readings")
-admin.site.add_action(stop_weather_readings, "Stop Weather Readings")
