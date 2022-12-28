@@ -10,7 +10,7 @@ services:
       description: "what does this django service do"
     ports:
       - "8000:8000"
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000 --noreload
     env_file:
       - ./.env.django
     volumes:

@@ -36,17 +36,17 @@ class ParticleDevice(TimeStampMixin):
             return []
 
     def update_event_subscription(self, particle_event):
+        # always unsubscribe to refresh the event subscription
+        get_particle_cloud().devices[self.name].unsubscribe(particle_event.name)
         if particle_event.subscribe:
-            app_logger.info(f"Event Suubscribe: {particle_event}")
+            app_logger.info(f"Event Subscribe: {particle_event}")
+            # if any of the events are currently subscribed, make sure to unsubscribe first
             if particle_event.event_type == ParticleDeviceEvent.EventType.FLOAT:
                 get_particle_cloud().devices[self.name].subscribe(particle_event.name, float_event_handler)
             elif particle_event.event_type == ParticleDeviceEvent.EventType.INTEGER:
                 get_particle_cloud().devices[self.name].subscribe(particle_event.name, integer_event_handler)
             elif particle_event.event_type == ParticleDeviceEvent.EventType.STRING:
                 get_particle_cloud().devices[self.name].subscribe(particle_event.name, string_event_handler)
-        else:
-            # TODO
-            print("TODO: Unsubscribe")
 
 
     def get_variable_value(self, variable_name:str, refresh_values: bool=True):
