@@ -10,6 +10,9 @@ Allow for user login and the ability to associate users to particle.io devices f
 
 https://grafana.com/tutorials/install-grafana-on-raspberry-pi/
 
+## Run Django in Jupyter Notebook
+
+https://medium.com/ayuth/how-to-use-django-in-jupyter-notebook-561ea2401852
 
 
 ## Scheduled Background Tasks
